@@ -1,6 +1,5 @@
 package com.byteshaft.foodie.fragments;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -16,14 +15,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -31,7 +29,6 @@ import com.byteshaft.foodie.R;
 import com.byteshaft.foodie.activities.MainActivity;
 import com.byteshaft.foodie.utils.AppGlobals;
 import com.byteshaft.foodie.utils.Helpers;
-import com.byteshaft.foodie.utils.MultiPartUtility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,11 +36,13 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UploadFragment extends Fragment implements View.OnClickListener {
+
+    private static final String TAG = "UploadFragment";
 
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
     private static final int PICK_IMAGE_MULTIPLE = 1;
@@ -52,19 +51,29 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
     private View mBaseView;
     private ProgressDialog mProgressDialog;
     private ImageView imageView;
-    private Button selectImage;
+    //private Button selectImage;
     private Button upload;
     private ArrayList<String> mArrayUri;
 
+    private EditText etCategory;
+    private EditText etContent;
+    private EditText etClue;
+
+    private String category;
+    private String content;
+    private String clue;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBaseView = inflater.inflate(R.layout.fragment_upload, container, false);
-        selectImage = (Button) mBaseView.findViewById(R.id.select_image);
-        imageView = (ImageView) mBaseView.findViewById(R.id.image_view);
+
+        etCategory = (EditText) mBaseView.findViewById(R.id.et_category);
+        etContent = (EditText) mBaseView.findViewById(R.id.et_content);
+        etClue = (EditText) mBaseView.findViewById(R.id.et_clue);
+
         upload = (Button) mBaseView.findViewById(R.id.upload);
         upload.setOnClickListener(this);
-        selectImage.setOnClickListener(this);
+
         return mBaseView;
     }
 
@@ -76,49 +85,17 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             value++;
             imageView.setTag(value);
-//            Picasso.with(SelectedAdDetail.this)
-//                    .load(url)
-//                    .resize(150, 150)
-//                    .into(imageView);
-//            layout.addView(imageView);
-//            imageView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    System.out.println(v.getTag());
-//                    Intent intent = new Intent(getApplicationContext(), productImageView.getClass());
-//                    intent.putExtra("url", imagesUrls.get((Integer) v.getTag() - 1));
-//                    startActivity(intent);
         }
-//            });
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.select_image:
-                if (ContextCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(),
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                } else {
-                    openPictures();
-                }
-                break;
-            case R.id.upload:
-                if (mArrayUri == null) {
-                    Toast.makeText(getActivity(), "please select image", Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-                    if (!mArrayUri.isEmpty()) {
-                        new UploadTask().execute();
-                    }
-                }
-                break;
 
-        }
+        category = etCategory.getText().toString();
+        content = etContent.getText().toString();
+        clue = etClue.getText().toString();
 
+        new UploadTask().execute();
     }
 
     @Override
@@ -268,7 +245,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
         return path;
     }
 
-    class UploadTask extends AsyncTask<String, String, JSONObject> {
+    class UploadTask extends AsyncTask<String, String, String> {
 
         private boolean internetAvailable = false;
 
@@ -276,35 +253,65 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
         protected void onPreExecute() {
             super.onPreExecute();
             mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage("uploading...");
+            //mProgressDialog.setMessage("uploading...");
             mProgressDialog.setIndeterminate(false);
             mProgressDialog.setCancelable(false);
             mProgressDialog.show();
         }
 
         @Override
-        protected JSONObject doInBackground(String... strings) {
+        protected String doInBackground(String... params) {
+
+            String sessionid = Helpers.getStringDataFromSharedPreference(AppGlobals.KEY_ER_SESSIONID);
+            String data = "";
             if (Helpers.isNetworkAvailable() && Helpers.isInternetWorking()) {
-                internetAvailable = true;
+
                 try {
-                    MultiPartUtility multiPartUtility =
-                            new MultiPartUtility(new URL(AppGlobals.SEND_IMAGES_URL), "POST");
-                    multiPartUtility.addFormField("userid",
-                            Helpers.getStringDataFromSharedPreference(AppGlobals.KEY_USER_ID));
-                    multiPartUtility.addFormField("comment", "test");
-                    multiPartUtility.addFilePart("file", new File(mArrayUri.get(0)));
-                    return new JSONObject(multiPartUtility.finish());
-                } catch (IOException | JSONException e) {
+                    data =   Helpers.connectionRequest
+                            (String.format(
+                                    AppGlobals.ADD_CREDIT_URL +"sessionid="+"%s"+"&getterid="+"%s"+"&gettername="+"%s"+"&category="+"%s"+"&content="+"%s"+"&clue="+"%s",
+                                    sessionid, 2, null, URLEncoder.encode(category), URLEncoder.encode(content), URLEncoder.encode(clue)), "POST");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    JSONObject jsonObject = new JSONObject(data);
+                    Log.i(TAG, jsonObject + " : "+jsonObject);
+
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-            return null;
+            return data;
         }
 
         @Override
-        protected void onPostExecute(JSONObject s) {
+        protected void onPostExecute(String s) {
             super.onPostExecute(s);
             mProgressDialog.dismiss();
+
+            //Toast.makeText(getActivity(), etContent.getText(), Toast.LENGTH_SHORT).show();
+
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                Log.i(TAG, "{onPostExecute} jsonObject : "+jsonObject);
+
+                if (jsonObject.getInt("apiresult") == 0) {
+
+                    Toast.makeText(getActivity(), "Credit Added Successfully", Toast.LENGTH_SHORT).show();
+
+                    return;
+                }
+
+                Toast.makeText(getActivity(), "Some error", Toast.LENGTH_SHORT).show();
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            /*
             try {
                 if (!internetAvailable || s == null || s.getInt("result") == 0) {
                     imageView.setImageResource(android.R.drawable.ic_menu_gallery);
@@ -318,6 +325,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                 e.printStackTrace();
             }
             Log.i("Response", "" + s);
+            */
         }
     }
 }

@@ -1,44 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/select_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:text="select image"
-        android:textColor="@android:color/white"
-        android:background="@drawable/button_effect"
-        android:textStyle="bold"
-        android:layout_marginBottom="5dp"
-        android:layout_above="@+id/upload"
-        android:layout_centerHorizontal="true" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_category"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:padding="15dp"
+            android:hint="category"
+            android:singleLine="true"
+            android:textColor="@color/gray_800"
+            android:textSize="14sp"
+            android:textCursorDrawable="@null"
+
+            android:background="@drawable/edt_bg"
+            android:drawablePadding="9dp"/>
+
+        <EditText
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:padding="15dp"
+            android:hint="content"
+            android:textCursorDrawable="@null"
+            android:textColor="@color/gray_800"
+            android:textSize="14sp"
+            android:singleLine="true"
+
+            android:background="@drawable/edt_bg"
+            android:drawablePadding="9dp"/>
+
+        <EditText
+            android:id="@+id/et_clue"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:padding="15dp"
+            android:hint="clue"
+            android:textCursorDrawable="@null"
+            android:textColor="@color/gray_800"
+            android:textSize="14sp"
+            android:singleLine="true"
+
+            android:background="@drawable/edt_bg"
+            android:drawablePadding="9dp"/>
+
+        <Button
+            android:id="@+id/upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:padding="15dp"
+            android:gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:text="Add Credit"
+            android:background="@drawable/button_effect"
+            android:layout_gravity="center_horizontal" />
+
+        <ProgressBar
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:id="@+id/progress_bar"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            style="?android:attr/progressBarStyle"/>
+
+    </LinearLayout>
 
 
-    <Button
-        android:id="@+id/upload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="upload Image"
-        android:padding="20dp"
-        android:textColor="@android:color/white"
-        android:background="@drawable/button_effect"
-        android:textStyle="bold"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp" />
-
-    <ImageView
-        android:id="@+id/image_view"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:scaleType="center"
-        android:src="@android:drawable/ic_menu_gallery"
-        android:background="@drawable/border_image"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="61dp" />
-
-</RelativeLayout>
+</LinearLayout>

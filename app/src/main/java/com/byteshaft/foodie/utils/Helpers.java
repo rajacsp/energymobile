@@ -31,15 +31,15 @@ public class Helpers {
     }
 
     // save boolean value for login status of user , takes boolean value as parameter
-    public static void userLogin(boolean value) {
+    public static void userLogin(String sessionid) {
         SharedPreferences sharedPreferences = getPreferenceManager();
-        sharedPreferences.edit().putBoolean(AppGlobals.USER_LOGIN_KEY, value).apply();
+        sharedPreferences.edit().putString(AppGlobals.KEY_ER_SESSIONID, sessionid).apply();
     }
 
     // get user login status and manipulate app functions by its returned boolean value
-    public static boolean isUserLoggedIn() {
+    public static String getLoggedinSessionId() {
         SharedPreferences sharedPreferences = getPreferenceManager();
-        return sharedPreferences.getBoolean(AppGlobals.USER_LOGIN_KEY, false);
+        return sharedPreferences.getString(AppGlobals.KEY_ER_SESSIONID, null);
     }
 
     /**

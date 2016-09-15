@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +22,8 @@ import java.io.IOException;
 
 
 public class LoginActivity extends Activity implements View.OnClickListener {
+
+    private static final String TAG = "LoginActivity";
 
     private Button mLogin;
     private EditText mEmail;
@@ -76,10 +79,11 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         protected String doInBackground(String... params) {
             String data = "";
             if (Helpers.isNetworkAvailable() && Helpers.isInternetWorking()) {
+
                 try {
                   data =   Helpers.connectionRequest
                           (String.format(
-                                  AppGlobals.LOGIN_URL +"username="+"%s"+"&password="+"%s",
+                                  AppGlobals.LOGIN_URL +"userid="+"%s"+"&password="+"%s",
                                   params[0], params[1]), "POST");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -87,12 +91,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
                 try {
                     JSONObject jsonObject = new JSONObject(data);
-                    System.out.println(jsonObject + "okay");
-                    Helpers.saveDataToSharedPreferences(AppGlobals.KEY_USERNAME,
-                            jsonObject.getString("username"));
-                    Helpers.saveDataToSharedPreferences(AppGlobals.KEY_USER_ID,
-                            String.valueOf(jsonObject.getInt("userid")));
-                    Helpers.saveDataToSharedPreferences(AppGlobals.KEY_PASSWORD, params[1]);
+                    Log.i(TAG, jsonObject + " : "+jsonObject);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -106,20 +106,30 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             super.onPostExecute(s);
             try {
                 JSONObject jsonObject = new JSONObject(s);
-                System.out.println(jsonObject);
-                if (jsonObject.get("result").equals("0")) {
+                Log.i(TAG, "{onPostExecute} jsonObject : "+jsonObject);
+
+                if (jsonObject.getInt("apiresult") == 0) {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     mProgressBar.setVisibility(View.GONE);
-                    Helpers.userLogin(true);
 
-                } else if (!jsonObject.get("result").equals("0")) {
-                    Toast.makeText(getApplicationContext(), "invalid credentials", Toast.LENGTH_SHORT)
-                            .show();
-                    mEmail.setText("");
-                    mPassword.setText("");
-                    mProgressBar.setVisibility(View.GONE);
-                    mLogin.setClickable(true);
+
+                    JSONObject apiValueJsonObject = new JSONObject(jsonObject.getString("apivalue"));
+                    String sessionid = apiValueJsonObject.getString("sessionid");
+
+                    Helpers.saveDataToSharedPreferences(AppGlobals.KEY_ER_SESSIONID, sessionid);
+                    Helpers.saveDataToSharedPreferences(AppGlobals.KEY_ER_MEMBERID, apiValueJsonObject.getString("MEMBERID"));
+                    Helpers.saveDataToSharedPreferences(AppGlobals.KEY_ER_SESSIONID, apiValueJsonObject.getString("USERID"));
+                    Helpers.userLogin(sessionid);
+
+                    return;
                 }
+
+                Toast.makeText(getApplicationContext(), "invalid credentials", Toast.LENGTH_SHORT).show();
+
+                mEmail.setText("");
+                mPassword.setText("");
+                mProgressBar.setVisibility(View.GONE);
+                mLogin.setClickable(true);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

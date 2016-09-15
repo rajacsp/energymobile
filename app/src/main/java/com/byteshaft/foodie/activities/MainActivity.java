@@ -30,14 +30,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         instance = this;
 
-        if(!Helpers.isUserLoggedIn()) {
+        if(Helpers.getLoggedinSessionId() == null) {
             startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
         }
 
         setContentView(R.layout.activity_main);
-        if (Helpers.isUserLoggedIn()) {
+        //if (Helpers.getLoggedinSessionId() == null) {
             loadFragment(new UploadFragment());
-        }
+        //}
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        System.out.println(Helpers.isUserLoggedIn());
-        if(!Helpers.isUserLoggedIn()) {
+        System.out.println(Helpers.getLoggedinSessionId());
+        if(Helpers.getLoggedinSessionId() == null) {
             startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
         }
     }
@@ -122,14 +122,20 @@ public class MainActivity extends AppCompatActivity
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
+                        // clear session and user details
                         SharedPreferences sharedpreferences = Helpers.getPreferenceManager();
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.clear();
+
                         editor.commit();
                         closeApplication();
-                        if (!Helpers.isUserLoggedIn()) {
+
+                        String sessionid = Helpers.getLoggedinSessionId();
+
+                        if (sessionid == null) {
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                            Helpers.userLogin(false);
+                            //Helpers.userLogin(false);
                         }
 
                     }
