@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
         //if (Helpers.getLoggedinSessionId() == null) {
-            loadFragment(new AddCreditFragment());
+            loadFragment(new ViewCreditsFragment());
         //}
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

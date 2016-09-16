@@ -20,11 +20,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qwan.energy.R;
@@ -37,7 +40,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddCreditFragment extends Fragment implements View.OnClickListener {
 
@@ -54,6 +59,7 @@ public class AddCreditFragment extends Fragment implements View.OnClickListener 
     private Button upload;
     private ArrayList<String> mArrayUri;
 
+    private AutoCompleteTextView etUsername;
     private EditText etCategory;
     private EditText etContent;
     private EditText etClue;
@@ -62,24 +68,41 @@ public class AddCreditFragment extends Fragment implements View.OnClickListener 
     private String content;
     private String clue;
 
+    private List<String> nameList;
+    private String[] names;
+    private Map<String, Object> nameMap;
+
+    private String selectedName;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBaseView = inflater.inflate(R.layout.fragment_upload, container, false);
 
-        /*
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, COUNTRIES);
-        AutoCompleteTextView textView = (AutoCompleteTextView)
-                findViewById(R.id.countries_list);
-        textView.setAdapter(adapter);
-        */
+        new NameFetchTask().execute();
 
+        nameList = new ArrayList<>();
+        nameMap = new LinkedHashMap<>();
+
+        etUsername = (AutoCompleteTextView) mBaseView.findViewById(R.id.ac_username);
         etCategory = (EditText) mBaseView.findViewById(R.id.et_category);
         etContent = (EditText) mBaseView.findViewById(R.id.et_content);
         etClue = (EditText) mBaseView.findViewById(R.id.et_clue);
 
         upload = (Button) mBaseView.findViewById(R.id.upload);
         upload.setOnClickListener(this);
+
+        /*
+        etUsername.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+
+
+
+                }
+            }
+        });
+        */
 
         return mBaseView;
     }
@@ -263,6 +286,10 @@ public class AddCreditFragment extends Fragment implements View.OnClickListener 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            //Log.i(TAG, "selected name ["+etUsername.getText()+"] ");
+            selectedName = etUsername.getText().toString();
+
             mProgressDialog = new ProgressDialog(getActivity());
             //mProgressDialog.setMessage("uploading...");
             mProgressDialog.setIndeterminate(false);
@@ -277,11 +304,14 @@ public class AddCreditFragment extends Fragment implements View.OnClickListener 
             String data = "";
             if (Helpers.isNetworkAvailable() && Helpers.isInternetWorking()) {
 
+                Integer getterid = new Integer(nameMap.get(selectedName).toString());
+                Log.i(TAG, "getter id ["+getterid+"] ");
+
                 try {
                     data =   Helpers.connectionRequest
                             (String.format(
                                     AppGlobals.ADD_CREDIT_URL +"sessionid="+"%s"+"&getterid="+"%s"+"&gettername="+"%s"+"&category="+"%s"+"&content="+"%s"+"&clue="+"%s",
-                                    sessionid, 2, 2, URLEncoder.encode(category), URLEncoder.encode(content), URLEncoder.encode(clue)), "POST");
+                                    sessionid, getterid, getterid, URLEncoder.encode(category), URLEncoder.encode(content), URLEncoder.encode(clue)), "POST");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -310,9 +340,11 @@ public class AddCreditFragment extends Fragment implements View.OnClickListener 
 
                 if (jsonObject.getInt("apiresult") == 0) {
 
+                    /*
                     etCategory.setText("");
                     etContent.setText("");
                     etClue.setText("222");
+                    */
 
                     Toast.makeText(getActivity(), "Credit Added Successfully", Toast.LENGTH_SHORT).show();
 
@@ -321,13 +353,88 @@ public class AddCreditFragment extends Fragment implements View.OnClickListener 
 
                 Toast.makeText(getActivity(), "Some error", Toast.LENGTH_SHORT).show();
 
-
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
 
 
+    class NameFetchTask extends AsyncTask<String, String, String> {
+
+        private static final String TASK_TAG = "NameFetchTask";
+
+        private boolean internetAvailable = false;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String sessionid = Helpers.getStringDataFromSharedPreference(AppGlobals.KEY_ER_SESSIONID);
+            String data = "";
+            if (Helpers.isNetworkAvailable() && Helpers.isInternetWorking()) {
+                try {
+                    data =   Helpers.connectionRequest
+                            (
+                                    String.format(AppGlobals.GET_NAMES_URL),
+                                    "POST"
+                            );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    JSONObject jsonObject = new JSONObject(data);
+                    Log.i(TASK_TAG, jsonObject + " : "+jsonObject);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            //mProgressDialog.dismiss();
+
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                Log.i(TAG, "{onPostExecute} jsonObject : "+jsonObject);
+
+                if (jsonObject.getInt("apiresult") == 0) {
+
+                    JSONArray apiValue = jsonObject.getJSONArray("apivalue");
+
+                    for (int i = 0; i < apiValue.length(); i++) {
+                        JSONObject json = apiValue.getJSONObject(i);
+
+                        if(!json.has("FULLNAME"))
+                            continue;
+
+                        String fullName =  json.getString("FULLNAME");
+                        String memberId =  json.getString("MEMBERID");
+                        nameList.add(fullName);
+                        nameMap.put(fullName, memberId);
+                    }
+
+                    names = (String[]) nameList.toArray(new String[0]);
+
+                    AutoCompleteTextView textView = (AutoCompleteTextView) mBaseView.findViewById(R.id.ac_username);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, names);
+                    textView.setAdapter(adapter);
+
+                    return;
+                }
+                Toast.makeText(getActivity(), "Some error", Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

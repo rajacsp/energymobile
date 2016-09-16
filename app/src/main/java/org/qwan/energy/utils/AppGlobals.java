@@ -20,15 +20,16 @@ public class AppGlobals extends Application {
     //public static final String BASE_URL = "http://tode.ca/tode_rest_php/";
     // office ip: 172.16.21.57
     // home ip: 192.168.0.15
-    //public static final String BASE_URL = "http://172.16.21.57:1718/Brazuca/";
-    public static final String BASE_URL = "http://tode.ca:8090/";
+    public static final String BASE_URL = "http://172.16.21.57:1718/Brazuca/"; //LOCALHOST
+    //public static final String BASE_URL = "http://tode.ca:8090/"; //LIVE
     //http://tode.ca/tode_rest_php/r_sa_user_select.php?username=raja&password=test
     //http://localhost:1718/Brazuca/energy/login
     //http://172.16.21.57:1718/Brazuca/energy/login
 
-    public static final String LOGIN_URL = String.format("%senergy/login?", BASE_URL);
+    public static final String LOGIN_URL = String.format("%s"+"energy/login?", BASE_URL);
+    public static final String GET_NAMES_URL = String.format("%s"+"energy/get/all/users", BASE_URL);
     public static final String ADD_CREDIT_URL = String.format("%s"+"energy/add/credit?", BASE_URL);
-    public static final String REGISTER_URL = String.format("%sr_sa_registeruser.php", BASE_URL);
+    public static final String REGISTER_URL = String.format("%s"+"r_sa_registeruser.php", BASE_URL);
     public static final String GET_CREDITS_URL = String.format("%s"+"energy/get/user/credits?sessionid=", BASE_URL);
 
     public static final String NO_INTERNET_TITLE = "Info";
