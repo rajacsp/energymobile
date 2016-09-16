@@ -5,11 +5,11 @@
         <item
             android:id="@+id/nav_add_credit"
             android:icon="@drawable/upload_image"
-            android:title="Upload images" />
+            android:title="Add Credit" />
         <item
             android:id="@+id/nav_view_credits"
             android:icon="@drawable/images"
-            android:title="View images" />
+            android:title="View Credits" />
         <item android:title="Settings">
             <menu>
                 <item android:id="@+id/nav_logout"

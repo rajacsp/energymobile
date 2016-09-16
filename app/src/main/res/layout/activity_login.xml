@@ -83,6 +83,24 @@
             android:background="@drawable/button_effect"
             android:layout_gravity="center_horizontal" />
 
+        <Button
+            android:id="@+id/register_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:padding="15dp"
+            android:gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:text="Register If you don't have an account"
+            android:background="@drawable/button_effect"
+            android:layout_gravity="center_horizontal" />
+
         <ProgressBar
             android:layout_width="50dp"
             android:layout_height="50dp"

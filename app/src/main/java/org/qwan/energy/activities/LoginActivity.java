@@ -26,6 +26,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "LoginActivity";
 
     private Button mLogin;
+    private Button mRegister;
     private EditText mEmail;
     private EditText mPassword;
     private String getEmail;
@@ -38,8 +39,13 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
         
         mLogin = (Button) findViewById(R.id.login_button);
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mLogin.setOnClickListener(this);
+
+        mRegister = (Button) findViewById(R.id.register_button);
+        mRegister.setOnClickListener(this);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
         mEmail = (EditText) findViewById(R.id.email_login);
         mPassword = (EditText) findViewById(R.id.password_login);
         getEmail = mEmail.getText().toString();
@@ -49,6 +55,9 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+
+        Log.i(TAG, "button : "+view.getId());
+
         switch (view.getId()) {
             case R.id.login_button:
                 if (mEmail.getText().toString().trim().isEmpty() &&
@@ -63,6 +72,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     new LoginTask().execute(data);
                 }
                 break;
+            case R.id.register_button:
+                Log.i(TAG, "register button is clicked");
+                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+                break;
         }
     }
 
@@ -73,6 +86,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             super.onPreExecute();
             mProgressBar.setVisibility(View.VISIBLE);
             mLogin.setClickable(false);
+            mRegister.setClickable(false);
         }
 
         @Override
@@ -130,6 +144,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 mPassword.setText("");
                 mProgressBar.setVisibility(View.GONE);
                 mLogin.setClickable(true);
+                mRegister.setClickable(true);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

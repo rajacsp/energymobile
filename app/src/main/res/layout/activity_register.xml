@@ -109,7 +109,7 @@
             android:textAllCaps="true"
             android:textStyle="bold"
             android:textSize="17sp"
-            android:text="Login"
+            android:text="Login if you have an existing"
             android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
