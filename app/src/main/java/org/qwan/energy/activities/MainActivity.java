@@ -16,8 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import org.qwan.energy.R;
-import org.qwan.energy.fragments.ImagesFragment;
-import org.qwan.energy.fragments.UploadFragment;
+import org.qwan.energy.fragments.ViewCreditsFragment;
+import org.qwan.energy.fragments.AddCreditFragment;
 import org.qwan.energy.utils.Helpers;
 
 public class MainActivity extends AppCompatActivity
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
         //if (Helpers.getLoggedinSessionId() == null) {
-            loadFragment(new UploadFragment());
+            loadFragment(new AddCreditFragment());
         //}
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -94,12 +94,12 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         switch (item.getItemId()) {
-            case R.id.nav_upload_image:
-                loadFragment(new UploadFragment());
+            case R.id.nav_add_credit:
+                loadFragment(new AddCreditFragment());
                 break;
 
-            case R.id.nav_gallery:
-                loadFragment(new ImagesFragment());
+            case R.id.nav_view_credits:
+                loadFragment(new ViewCreditsFragment());
                 break;
             case R.id.nav_logout:
                 showLogoutDialog();

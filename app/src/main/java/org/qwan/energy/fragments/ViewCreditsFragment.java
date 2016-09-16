@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.qwan.energy.R;
 import org.qwan.energy.utils.AppGlobals;
+import org.qwan.energy.utils.CreditItem;
 import org.qwan.energy.utils.Helpers;
 
 import java.io.IOException;
@@ -24,40 +25,42 @@ import java.util.ArrayList;
 
 public class ViewCreditsFragment extends Fragment {
 
+    private static final String TAG = "ViewCreditFragment";
+
     private View mBaseView;
-    private GridView gridView;
+    private ListView listView;
     private ProgressDialog mProgressDialog;
     private View baseView;
-    private ArrayList<String> imagesArrayList;
+    //private ArrayList<String> imagesArrayList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        imagesArrayList = new ArrayList<>();
+        //imagesArrayList = new ArrayList<>();
         mBaseView = inflater.inflate(R.layout.fragment_image, container, false);
         baseView = inflater.inflate(R.layout.fragment_image, container, false);
-        gridView = (GridView) mBaseView.findViewById(R.id.images_grid);
-        new GetImagesTask().execute();
+        listView = (ListView) mBaseView.findViewById(R.id.images_grid);
+        new GetCreditsTask().execute();
         return mBaseView;
     }
 
-    class ImageAdapter extends BaseAdapter {
+    class CreditItemAdapter extends BaseAdapter {
 
-        private ArrayList<String> items;
+        //private ArrayList<String> items;
+        private ArrayList<CreditItem> creditItems;
 
-        public ImageAdapter(ArrayList<String> totalImages) {
-            items = totalImages;
-
+        public CreditItemAdapter(ArrayList<CreditItem> creditItems) {
+            this.creditItems = creditItems;
         }
 
         @Override
         public int getCount() {
-            return items.size();
+            return creditItems.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return items.get(position);
+            return creditItems.get(position);
         }
 
         @Override
@@ -72,30 +75,34 @@ public class ViewCreditsFragment extends Fragment {
                 holder = new ViewHolder();
                 LayoutInflater layoutInflater = getActivity().getLayoutInflater();
                 convertView = layoutInflater.inflate(R.layout.single_image_delegate, parent, false);
-                holder.textView = (TextView) convertView.findViewById(R.id.single_text);
+
+                holder.tvCategory = (TextView) convertView.findViewById(R.id.title);
+                holder.tvContent  = (TextView) convertView.findViewById(R.id.content);
+                holder.tvClue  = (TextView) convertView.findViewById(R.id.clue);
+
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            /*
-            Picasso.with(getActivity().getApplicationContext())
-                    .load(AppGlobals.IMAGES_LOCATION+items.get(position))
-                    .placeholder(R.drawable.progress_animation)
-                    .into(holder.textView);
-                    */
+            CreditItem currentCreditItem = creditItems.get(position);
 
+            holder.tvCategory.setText(currentCreditItem.getCategory());
+            holder.tvContent.setText(currentCreditItem.getContent());
+            holder.tvClue.setText(currentCreditItem.getClue());
 
-           return convertView;
+            return convertView;
         }
     }
 
     public class ViewHolder {
-        TextView textView;
+        TextView tvCategory;
+        TextView tvContent;
+        TextView tvClue;
     }
 
 
-    class GetImagesTask extends AsyncTask<String, String, ArrayList<String>> {
+    class GetCreditsTask extends AsyncTask<String, String, ArrayList<CreditItem>> {
 
         private boolean internetAvailability = false;
 
@@ -110,8 +117,8 @@ public class ViewCreditsFragment extends Fragment {
         }
 
         @Override
-        protected ArrayList<String> doInBackground(String... strings) {
-            ArrayList<String> list = new ArrayList<>();
+        protected ArrayList<CreditItem> doInBackground(String... strings) {
+            ArrayList<CreditItem> list = new ArrayList<>();
 
             String sessionid = Helpers.getStringDataFromSharedPreference(AppGlobals.KEY_ER_SESSIONID);
             String result;
@@ -120,18 +127,34 @@ public class ViewCreditsFragment extends Fragment {
                 try {
                     result =   Helpers.connectionRequest
                             (String.format(
-                                    AppGlobals.GET_CREDITS_URL +"sessionid="+"%s",
+                                    AppGlobals.GET_CREDITS_URL +"%s",
                                     sessionid), "POST");
 
+
+
                     JSONObject jsonObject = new JSONObject(result);
-                    JSONArray jsonArray = jsonObject.getJSONArray("entries");
+
+                    // check apiresult
+                    // JSONObject apiValueObject = jsonObject.getJSONObject("apivalue");
+
+                    JSONArray jsonArray = jsonObject.getJSONArray("apivalue");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject json = jsonArray.getJSONObject(i);
-                        Log.i("TAG", json.toString());
-                        if (!list.contains(json.getString("file_location"))) {
-                            list.add(json.getString("file_location"));
-                        }
+                        Log.i(TAG, json.toString());
+
+                        String CATEGORY_CONST = "CATEGORY";
+                        String CONTENT_CONST = "CONTENT";
+                        String CLUE_CONST = "CLUE";
+
+                        String category = json.getString(CATEGORY_CONST);
+                        String clue =  json.has(CONTENT_CONST) ? json.getString(CONTENT_CONST) : "";
+                        String content = json.has(CLUE_CONST) ? json.getString(CLUE_CONST) : "";
+
+                        CreditItem cCreditItem = new CreditItem(category, content, clue);
+
+                        list.add(cCreditItem);
                     }
+
                     return list;
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
@@ -143,16 +166,16 @@ public class ViewCreditsFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<String> s) {
-            super.onPostExecute(s);
+        protected void onPostExecute(ArrayList<CreditItem> creditItems) {
+            super.onPostExecute(creditItems);
             mProgressDialog.dismiss();
 
             if (!internetAvailability) {
                 Helpers.alertDialog(getActivity(), AppGlobals.NO_INTERNET_TITLE,
                         AppGlobals.NO_INTERNET_MESSAGE, null);
             } else {
-                ImageAdapter imageAdapter = new ImageAdapter(s);
-                gridView.setAdapter(imageAdapter);
+                CreditItemAdapter creditItemAdapter = new CreditItemAdapter(creditItems);
+                listView.setAdapter(creditItemAdapter);
             }
 
         }
