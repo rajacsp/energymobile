@@ -25,13 +25,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.qwan.energy.R;
 import org.qwan.energy.activities.MainActivity;
 import org.qwan.energy.utils.AppGlobals;
 import org.qwan.energy.utils.Helpers;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -67,6 +66,14 @@ public class AddCreditFragment extends Fragment implements View.OnClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mBaseView = inflater.inflate(R.layout.fragment_upload, container, false);
 
+        /*
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, COUNTRIES);
+        AutoCompleteTextView textView = (AutoCompleteTextView)
+                findViewById(R.id.countries_list);
+        textView.setAdapter(adapter);
+        */
+
         etCategory = (EditText) mBaseView.findViewById(R.id.et_category);
         etContent = (EditText) mBaseView.findViewById(R.id.et_content);
         etClue = (EditText) mBaseView.findViewById(R.id.et_clue);
@@ -76,6 +83,10 @@ public class AddCreditFragment extends Fragment implements View.OnClickListener 
 
         return mBaseView;
     }
+
+    private static final String[] COUNTRIES = new String[] {
+            "Belgium", "France", "Italy", "Germany", "Spain"
+    };
 
     private void showPictures(ArrayList<String> imagesUrls) {
         int value = 0;
