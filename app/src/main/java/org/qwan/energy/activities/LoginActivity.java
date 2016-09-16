@@ -1,4 +1,4 @@
-package com.byteshaft.foodie.activities;
+package org.qwan.energy.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,9 +11,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.byteshaft.foodie.R;
-import com.byteshaft.foodie.utils.AppGlobals;
-import com.byteshaft.foodie.utils.Helpers;
+import org.qwan.energy.R;
+import org.qwan.energy.utils.AppGlobals;
+import org.qwan.energy.utils.Helpers;
 
 import org.json.JSONException;
 import org.json.JSONObject;

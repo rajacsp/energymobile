@@ -1,4 +1,4 @@
-package com.byteshaft.foodie.utils;
+package org.qwan.energy.utils;
 
 
 import android.app.Activity;
@@ -13,7 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
 
-import com.byteshaft.foodie.R;
+import org.qwan.energy.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;

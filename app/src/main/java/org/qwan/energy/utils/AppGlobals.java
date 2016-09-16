@@ -1,4 +1,4 @@
-package com.byteshaft.foodie.utils;
+package org.qwan.energy.utils;
 
 import android.app.Application;
 import android.content.Context;
@@ -18,7 +18,9 @@ public class AppGlobals extends Application {
     public static final String KEY_USER_ID = "user_id";
 
     //public static final String BASE_URL = "http://tode.ca/tode_rest_php/";
-    public static final String BASE_URL = "http://172.16.21.57:1718/Brazuca/";
+    // office ip: 172.16.21.57
+    // home ip: 192.168.0.15
+    public static final String BASE_URL = "http://192.168.0.15:1718/Brazuca/";
     //http://tode.ca/tode_rest_php/r_sa_user_select.php?username=raja&password=test
     //http://localhost:1718/Brazuca/energy/login
     //http://172.16.21.57:1718/Brazuca/energy/login

@@ -1,4 +1,4 @@
-package com.byteshaft.foodie.fragments;
+package org.qwan.energy.fragments;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -10,21 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
-
-import com.byteshaft.foodie.R;
-import com.byteshaft.foodie.utils.AppGlobals;
-import com.byteshaft.foodie.utils.Helpers;
-import com.squareup.picasso.Picasso;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.qwan.energy.R;
+import org.qwan.energy.utils.AppGlobals;
+import org.qwan.energy.utils.Helpers;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ImagesFragment extends Fragment {
+public class ViewCreditsFragment extends Fragment {
 
     private View mBaseView;
     private GridView gridView;
@@ -74,21 +72,26 @@ public class ImagesFragment extends Fragment {
                 holder = new ViewHolder();
                 LayoutInflater layoutInflater = getActivity().getLayoutInflater();
                 convertView = layoutInflater.inflate(R.layout.single_image_delegate, parent, false);
-                holder.imageView = (ImageView) convertView.findViewById(R.id.single_image);
+                holder.textView = (TextView) convertView.findViewById(R.id.single_text);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
+
+            /*
             Picasso.with(getActivity().getApplicationContext())
                     .load(AppGlobals.IMAGES_LOCATION+items.get(position))
                     .placeholder(R.drawable.progress_animation)
-                    .into(holder.imageView);
+                    .into(holder.textView);
+                    */
+
+
            return convertView;
         }
     }
 
     public class ViewHolder {
-        ImageView imageView;
+        TextView textView;
     }
 
 
@@ -109,12 +112,17 @@ public class ImagesFragment extends Fragment {
         @Override
         protected ArrayList<String> doInBackground(String... strings) {
             ArrayList<String> list = new ArrayList<>();
+
+            String sessionid = Helpers.getStringDataFromSharedPreference(AppGlobals.KEY_ER_SESSIONID);
             String result;
             if (Helpers.isNetworkAvailable() && Helpers.isInternetWorking()) {
                 internetAvailability = true;
                 try {
-                    result = Helpers.connectionRequest(AppGlobals.GET_IMAGES_URL+
-                            Helpers.getStringDataFromSharedPreference(AppGlobals.KEY_USER_ID), "GET");
+                    result =   Helpers.connectionRequest
+                            (String.format(
+                                    AppGlobals.GET_CREDITS_URL +"sessionid="+"%s",
+                                    sessionid), "POST");
+
                     JSONObject jsonObject = new JSONObject(result);
                     JSONArray jsonArray = jsonObject.getJSONArray("entries");
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -138,6 +146,7 @@ public class ImagesFragment extends Fragment {
         protected void onPostExecute(ArrayList<String> s) {
             super.onPostExecute(s);
             mProgressDialog.dismiss();
+
             if (!internetAvailability) {
                 Helpers.alertDialog(getActivity(), AppGlobals.NO_INTERNET_TITLE,
                         AppGlobals.NO_INTERNET_MESSAGE, null);

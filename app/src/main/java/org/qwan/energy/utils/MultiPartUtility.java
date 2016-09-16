@@ -1,4 +1,4 @@
-package com.byteshaft.foodie.utils;
+package org.qwan.energy.utils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

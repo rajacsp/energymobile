@@ -1,4 +1,4 @@
-package com.byteshaft.foodie.fragments;
+package org.qwan.energy.fragments;
 
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
@@ -25,10 +25,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.byteshaft.foodie.R;
-import com.byteshaft.foodie.activities.MainActivity;
-import com.byteshaft.foodie.utils.AppGlobals;
-import com.byteshaft.foodie.utils.Helpers;
+import org.qwan.energy.R;
+import org.qwan.energy.activities.MainActivity;
+import org.qwan.energy.utils.AppGlobals;
+import org.qwan.energy.utils.Helpers;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,9 +40,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UploadFragment extends Fragment implements View.OnClickListener {
+public class AddCreditFragment extends Fragment implements View.OnClickListener {
 
-    private static final String TAG = "UploadFragment";
+    private static final String TAG = "AddCreditFragment";
 
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
     private static final int PICK_IMAGE_MULTIPLE = 1;
@@ -106,7 +106,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.i("TAG", "Permission granted");
+                    Log.i(TAG, "Permission granted");
                     openPictures();
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Permission denied!"
@@ -140,7 +140,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
             if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == MainActivity.RESULT_OK
                     && null != data) {
                 mArrayUri = new ArrayList<>();
-                Log.i("TAG", "if part");
+                Log.i(TAG, "if part");
                 // Get the Image from data
 
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
@@ -164,7 +164,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
 
                 } else {
                     if (data.getClipData() != null) {
-                        Log.i("TAG", "else part");
+                        Log.i(TAG, "else part");
                         ClipData mClipData = data.getClipData();
                         mArrayUri = new ArrayList<>();
                         for (int i = 0; i < mClipData.getItemCount(); i++) {
@@ -270,7 +270,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                     data =   Helpers.connectionRequest
                             (String.format(
                                     AppGlobals.ADD_CREDIT_URL +"sessionid="+"%s"+"&getterid="+"%s"+"&gettername="+"%s"+"&category="+"%s"+"&content="+"%s"+"&clue="+"%s",
-                                    sessionid, 2, null, URLEncoder.encode(category), URLEncoder.encode(content), URLEncoder.encode(clue)), "POST");
+                                    sessionid, 2, 2, URLEncoder.encode(category), URLEncoder.encode(content), URLEncoder.encode(clue)), "POST");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -299,6 +299,10 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
 
                 if (jsonObject.getInt("apiresult") == 0) {
 
+                    etCategory.setText("");
+                    etContent.setText("");
+                    etClue.setText("222");
+
                     Toast.makeText(getActivity(), "Credit Added Successfully", Toast.LENGTH_SHORT).show();
 
                     return;
@@ -307,25 +311,12 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getActivity(), "Some error", Toast.LENGTH_SHORT).show();
 
 
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            /*
-            try {
-                if (!internetAvailable || s == null || s.getInt("result") == 0) {
-                    imageView.setImageResource(android.R.drawable.ic_menu_gallery);
-                    Toast.makeText(getActivity(), "image has been uploaded", Toast.LENGTH_SHORT).show();
-                } else
-                    if (s.getInt("result") == 0) {
-                        imageView.setImageResource(android.R.drawable.ic_menu_gallery);
-                        Toast.makeText(getActivity(), "image has been uploaded", Toast.LENGTH_SHORT).show();
-                    }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            Log.i("Response", "" + s);
-            */
+
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.byteshaft.foodie.utils;
+package org.qwan.energy.utils;
 
 import android.util.Base64;
 

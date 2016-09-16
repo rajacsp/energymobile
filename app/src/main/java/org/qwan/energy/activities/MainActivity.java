@@ -1,4 +1,4 @@
-package com.byteshaft.foodie.activities;
+package org.qwan.energy.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,10 +15,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.byteshaft.foodie.R;
-import com.byteshaft.foodie.fragments.ImagesFragment;
-import com.byteshaft.foodie.fragments.UploadFragment;
-import com.byteshaft.foodie.utils.Helpers;
+import org.qwan.energy.R;
+import org.qwan.energy.fragments.ImagesFragment;
+import org.qwan.energy.fragments.UploadFragment;
+import org.qwan.energy.utils.Helpers;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
