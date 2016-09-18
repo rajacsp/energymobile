@@ -31,12 +31,10 @@ public class ViewCreditsFragment extends Fragment {
     private ListView listView;
     private ProgressDialog mProgressDialog;
     private View baseView;
-    //private ArrayList<String> imagesArrayList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //imagesArrayList = new ArrayList<>();
         mBaseView = inflater.inflate(R.layout.fragment_image, container, false);
         baseView = inflater.inflate(R.layout.fragment_image, container, false);
         listView = (ListView) mBaseView.findViewById(R.id.images_grid);
@@ -46,7 +44,6 @@ public class ViewCreditsFragment extends Fragment {
 
     class CreditItemAdapter extends BaseAdapter {
 
-        //private ArrayList<String> items;
         private ArrayList<CreditItem> creditItems;
 
         public CreditItemAdapter(ArrayList<CreditItem> creditItems) {
