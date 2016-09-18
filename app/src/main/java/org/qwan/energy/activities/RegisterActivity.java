@@ -5,9 +5,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.qwan.energy.R;
@@ -28,7 +31,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button registerButton;
-    private Button loginButton;
+
     private ProgressDialog mProgressDialog;
 
     @Override
@@ -40,9 +43,25 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         emailEditText = (EditText) findViewById(R.id.email);
         passwordEditText = (EditText) findViewById(R.id.password);
         registerButton = (Button) findViewById(R.id.register);
-        loginButton = (Button) findViewById(R.id.login);
+
         registerButton.setOnClickListener(this);
-        loginButton.setOnClickListener(this);
+
+
+
+        TextView textView =(TextView)findViewById(R.id.tv_login);
+        textView.setClickable(true);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        String text = "Existing User?";
+        textView.setText(Html.fromHtml(text));
+
+        final TextView txtView = (TextView) this.findViewById(R.id.tv_login);
+        txtView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
     }
 
 
@@ -75,10 +94,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.login:
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                RegisterActivity.this.finish();
-                break;
             case R.id.register:
                 if (userNameEdittext.getText().toString().trim().isEmpty() ||
                         passwordEditText.getText().toString().trim().isEmpty()

@@ -94,11 +94,12 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:textAllCaps="true"
-            android:textStyle="bold"
-            android:textSize="17sp"
+            android:textSize="12dp"
+            android:textColor="#fff"
             android:text="Add Credit"
             android:background="@drawable/button_effect"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            />
 
         <ProgressBar
             android:layout_width="50dp"

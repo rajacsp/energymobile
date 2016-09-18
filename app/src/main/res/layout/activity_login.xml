@@ -65,6 +65,7 @@
             android:background="@drawable/edt_bg"
             android:drawablePadding="9dp"/>
 
+        <!--
         <Button
             android:id="@+id/login_button"
             android:layout_width="wrap_content"
@@ -82,7 +83,28 @@
             android:text="Login"
             android:background="@drawable/button_effect"
             android:layout_gravity="center_horizontal" />
+            -->
 
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:padding="15dp"
+            android:gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:textAllCaps="true"
+            android:textSize="12dp"
+            android:textColor="#fff"
+            android:text="Login"
+            android:background="@drawable/button_effect"
+            android:layout_gravity="center_horizontal"
+            />
+
+        <!--
         <Button
             android:id="@+id/register_button"
             android:layout_width="wrap_content"
@@ -100,6 +122,19 @@
             android:text="Register If you don't have an account"
             android:background="@drawable/button_effect"
             android:layout_gravity="center_horizontal" />
+            -->
+
+        <TextView
+            android:id="@+id/txtLostpassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:autoLink="web"
+            android:textColor="#0000ff"
+            android:gravity="center"
+            android:padding="20px"
+            android:text="New User"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <ProgressBar
             android:layout_width="50dp"

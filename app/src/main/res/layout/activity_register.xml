@@ -96,21 +96,17 @@
             android:text="Register"
             android:layout_gravity="center_horizontal" />
 
-        <Button
-            android:id="@+id/login"
+        <TextView
+            android:id="@+id/tv_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:padding="15dp"
+            android:layout_gravity="center"
+            android:autoLink="web"
+            android:textColor="#0000ff"
             android:gravity="center"
-            android:background="@drawable/button_effect"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:textAllCaps="true"
-            android:textStyle="bold"
-            android:textSize="17sp"
-            android:text="Login if you have an existing"
-            android:layout_gravity="center_horizontal" />
+            android:padding="20px"
+            android:text="New User"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
 

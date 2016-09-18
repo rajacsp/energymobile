@@ -4,19 +4,21 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import org.qwan.energy.R;
-import org.qwan.energy.utils.AppGlobals;
-import org.qwan.energy.utils.Helpers;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.qwan.energy.R;
+import org.qwan.energy.utils.AppGlobals;
+import org.qwan.energy.utils.Helpers;
 
 import java.io.IOException;
 
@@ -26,7 +28,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "LoginActivity";
 
     private Button mLogin;
-    private Button mRegister;
+
     private EditText mEmail;
     private EditText mPassword;
     private String getEmail;
@@ -41,10 +43,26 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         mLogin = (Button) findViewById(R.id.login_button);
         mLogin.setOnClickListener(this);
 
-        mRegister = (Button) findViewById(R.id.register_button);
-        mRegister.setOnClickListener(this);
+
 
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
+
+        TextView textView =(TextView)findViewById(R.id.txtLostpassword);
+        textView.setClickable(true);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        String text = "New User?";
+        textView.setText(Html.fromHtml(text));
+
+        final TextView txtView = (TextView) this.findViewById(R.id.txtLostpassword);
+        txtView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+            }
+        });
+
 
         mEmail = (EditText) findViewById(R.id.email_login);
         mPassword = (EditText) findViewById(R.id.password_login);
@@ -72,10 +90,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     new LoginTask().execute(data);
                 }
                 break;
-            case R.id.register_button:
-                Log.i(TAG, "register button is clicked");
-                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
-                break;
+            //case R.id.register_button:
+//                Log.i(TAG, "register button is clicked");
+//                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+  //              break;
         }
     }
 
@@ -86,7 +104,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             super.onPreExecute();
             mProgressBar.setVisibility(View.VISIBLE);
             mLogin.setClickable(false);
-            mRegister.setClickable(false);
+
         }
 
         @Override
@@ -144,7 +162,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 mPassword.setText("");
                 mProgressBar.setVisibility(View.GONE);
                 mLogin.setClickable(true);
-                mRegister.setClickable(true);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

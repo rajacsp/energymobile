@@ -3,16 +3,20 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:textColor="#fff"
             android:id="@+id/nav_add_credit"
             android:icon="@drawable/upload_image"
             android:title="Add Credit" />
         <item
+            android:textColor="#fff"
             android:id="@+id/nav_view_credits"
             android:icon="@drawable/images"
             android:title="View Credits" />
         <item android:title="Settings">
             <menu>
-                <item android:id="@+id/nav_logout"
+                <item
+                    android:textColor="#fff"
+                    android:id="@+id/nav_logout"
                     android:icon="@mipmap/ic_exit"
                     android:title="Logout"/>
             </menu>
