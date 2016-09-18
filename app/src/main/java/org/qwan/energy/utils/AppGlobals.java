@@ -21,8 +21,8 @@ public class AppGlobals extends Application {
     // office ip: 172.16.21.57
     // home ip: 192.168.0.15
     //public static final String BASE_URL = "http://172.16.21.57:1718/Brazuca/"; //LOCALHOST
-    public static final String BASE_URL = "http://192.168.0.15:1718/Brazuca/"; //LOCALHOST
-    //public static final String BASE_URL = "http://tode.ca:8090/"; //LIVE
+    //public static final String BASE_URL = "http://192.168.0.15:1718/Brazuca/"; //LOCALHOST
+    public static final String BASE_URL = "http://tode.ca:8090/"; //LIVE
     //http://tode.ca/tode_rest_php/r_sa_user_select.php?username=raja&password=test
     //http://localhost:1718/Brazuca/energy/login
     //http://172.16.21.57:1718/Brazuca/energy/login
